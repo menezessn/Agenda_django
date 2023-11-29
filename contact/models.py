@@ -24,7 +24,7 @@ class Contact (models.Model):
     show = models.BooleanField(default=True)
     picture = models.ImageField(blank=True, upload_to='pictures/%Y/%m/')
     category = models.ForeignKey(
-        Category, 
+        Category,
         on_delete=models.SET_NULL,
         blank=True, null=True
         )

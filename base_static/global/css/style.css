@@ -312,3 +312,24 @@
     filter: brightness(80%);
     box-shadow: 0 0 5px var(--link-dark-color);
   }
+
+  .btn-reset {
+    background-color: #5e2129;
+    color: var(--clr-white);
+    font-weight: bold;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: var(--default-border-radius);
+    cursor: pointer;
+    transition: filter var(--transition-fast) ease-in-out;
+  }
+  
+  .btn-reset:hover {
+    filter: brightness(90%);
+  }
+  
+  .btn-reset:focus,
+  .btn-reset:active {
+    filter: brightness(80%);
+    box-shadow: 0 0 5px var(--link-dark-color);
+  }
