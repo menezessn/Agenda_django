@@ -34,7 +34,6 @@ def login_view(request):
             messages.success(request, 'logado com sucesso')
             auth.login(request, user)
             return redirect('contact:index')
-        messages.error(request, 'Login inválido')
 
     return render(
         request,
@@ -47,7 +46,7 @@ def login_view(request):
 
 @login_required(login_url='contact:login')
 def user_update(request):
-    form = RegisterUpdateForm(instance=request.user)
+    form = RegisterUpdateForm(instance=request.user)  # type: ignore
 
     if request.method != 'POST':
         return render(

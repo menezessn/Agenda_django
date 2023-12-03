@@ -4,11 +4,12 @@ from contact.forms import ContactForm
 from django.urls import reverse  # type: ignore
 from contact.models import Contact
 from django.contrib.auth.decorators import login_required  # type: ignore
+from django.contrib import messages  # type: ignore
 
 
 @login_required(login_url='contact:login')
 def create(request):
-    form_action = reverse('contact:register')
+    form_action = reverse('contact:create')
     if request.method == 'POST':
         form = ContactForm(request.POST, request.FILES)
         context = {
@@ -19,6 +20,7 @@ def create(request):
             contact = form.save(commit=False)
             contact.owner = request.user
             contact.save()
+            messages.success(request, 'Contato registrado')
             return redirect('contact:update', contact_id=contact.pk)
 
         return render(
@@ -51,6 +53,7 @@ def update(request, contact_id):
         }
         if form.is_valid():
             contact = form.save()
+            messages.success(request, 'Contato atualizado')
             return redirect('contact:update', contact_id=contact.pk)
 
         return render(

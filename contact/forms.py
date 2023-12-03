@@ -14,10 +14,24 @@ class ContactForm(forms.ModelForm):
             },
         ),
         required=False,
+        label='Imagem'
     )
     first_name = forms.CharField(
         label="Nome",
         help_text='Digite seu primeiro nome apenas'
+    )
+    last_name = forms.CharField(
+        label='Sobrenome'
+    )
+    phone = forms.CharField(
+        label='Telefone'
+    )
+    email = forms.EmailField(
+        label='E-mail'
+    )
+    description = forms.CharField(
+        label='Descrição',
+        widget=forms.Textarea
     )
 
     def __init__(self, *args, **kwargs):
@@ -25,6 +39,9 @@ class ContactForm(forms.ModelForm):
         self.fields['first_name'].widget.attrs.update({
             'placeholder': 'Escreva aqui'
         })
+        # self.fields['description'].widget.attrs.update({
+        #     'label': 'Descrição',
+        # })
 
     class Meta:
         model = models.Contact
@@ -84,14 +101,17 @@ class ContactForm(forms.ModelForm):
 
 class RegisterForm(UserCreationForm):
     first_name = forms.CharField(
+        label='Nome',
         required=True,
         min_length=3,
     )
     last_name = forms.CharField(
+        label='Sobrenome',
         required=True,
         min_length=3,
     )
     email = forms.EmailField(
+        label='E-mail',
         required=True,
         min_length=3,
     )
@@ -112,10 +132,12 @@ class RegisterForm(UserCreationForm):
                 ValidationError('Já existe esse email',
                                 code='invalid')
             )
+        return email
 
 
 class RegisterUpdateForm(forms.ModelForm):
     first_name = forms.CharField(
+        label='Nome',
         min_length=2,
         max_length=30,
         required=True,
@@ -125,6 +147,7 @@ class RegisterUpdateForm(forms.ModelForm):
         }
     )
     last_name = forms.CharField(
+        label='Sobrenome',
         min_length=2,
         max_length=30,
         required=True,
@@ -135,7 +158,7 @@ class RegisterUpdateForm(forms.ModelForm):
         }
     )
     password1 = forms.CharField(
-        label='Password',
+        label='Senha',
         strip=False,
         widget=forms.PasswordInput(attrs={'autocomplete': 'new-password'}),
         help_text=password_validation.password_validators_help_text_html(),
@@ -147,6 +170,9 @@ class RegisterUpdateForm(forms.ModelForm):
         widget=forms.PasswordInput(attrs={'autocomplete': 'new-password'}),
         help_text='Use a mesma senha de antes',
         required=False
+    )
+    email = forms.EmailField(
+        label='E-mail',
     )
 
     class Meta:
@@ -193,6 +219,7 @@ class RegisterUpdateForm(forms.ModelForm):
                     ValidationError('Já existe esse email',
                                     code='invalid')
                 )
+        return email
 
     def clean_password1(self):
         password1 = self.cleaned_data.get('password1')

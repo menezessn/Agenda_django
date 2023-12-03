@@ -18,15 +18,19 @@ class Contact (models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50, blank=True)
     phone = models.CharField(max_length=50)
-    email = models.EmailField(max_length=254)
+    email = models.EmailField(max_length=254, verbose_name='E-mail')
     created_date = models.DateTimeField(default=timezone.now)
     description = models.TextField(blank=True)
     show = models.BooleanField(default=True)
-    picture = models.ImageField(blank=True, upload_to='pictures/%Y/%m/')
+    picture = models.ImageField(
+        blank=True, upload_to='pictures/%Y/%m/',
+        verbose_name='Imagem'
+    )
     category = models.ForeignKey(
         Category,
         on_delete=models.SET_NULL,
-        blank=True, null=True
+        blank=True, null=True,
+        verbose_name='Categoria',
         )
     owner = models.ForeignKey(
         User,
