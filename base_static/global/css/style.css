@@ -239,6 +239,10 @@
     border: 1px solid rgba(255, 255, 0, 90%);
   }
   
+  .message.info {
+    background: rgba(0, 68, 255, 0.3);
+    border: 1px solid rgba(255, 255, 0, 90%);
+  }
   .form-wrapper {
     max-width: 60rem;
     margin: var(--spacing) auto;
@@ -332,4 +336,24 @@
   .btn-reset:active {
     filter: brightness(80%);
     box-shadow: 0 0 5px var(--link-dark-color);
+  }
+
+  .contact-links {
+    margin-block: calc(var(--small-font-size) * 2);
+    display: flex;
+    align-items: center;
+    gap: 0 var(--spacing);
+  }
+  
+  .btn-link {
+    font-size: var(--small-font-size);
+    text-decoration: none;
+    font-weight: bold;
+    padding: 1rem;
+    display: block;
+    line-height: var(--small-font-size);
+  }
+  
+  .btn-delete {
+    background: tomato;
   }

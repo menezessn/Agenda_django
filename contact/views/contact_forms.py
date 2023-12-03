@@ -1,50 +1,35 @@
-from typing import Any
 from django.shortcuts import (  # type: ignore
-    render, get_object_or_404, redirect)
-from django.db.models import Q  # type: ignore
+    render, redirect, get_object_or_404)
+from contact.forms import ContactForm
+from django.urls import reverse  # type: ignore
 from contact.models import Contact
-from django.core.paginator import Paginator  # type: ignore
-from django import forms
-from django.core.exceptions import ValidationError
+from django.contrib.auth.decorators import login_required  # type: ignore
 
 
-class ContactForm(forms.ModelForm):
-    class Meta:
-        model = Contact
-        fields = (
-            'first_name', 'last_name', 'phone',
-            )
-        
-    def clean(self) -> dict[str, Any]:
-        cleaned_data = self.cleaned_data
-        self.add_error(
-            None, 
-            ValidationError(
-                'Mensagem de erro', code='invalid'
-            )
-        )
-        self.add_error(
-            None, 
-            ValidationError(
-                'Mensagem de erro2', code='invalid'
-            )
-        )
-        return super().clean()
-
-
+@login_required(login_url='contact:login')
 def create(request):
+    form_action = reverse('contact:register')
     if request.method == 'POST':
+        form = ContactForm(request.POST, request.FILES)
         context = {
-            'form': ContactForm(data=request.POST)
+            'form': form,
+            'form_action': form_action
         }
+        if form.is_valid():
+            contact = form.save(commit=False)
+            contact.owner = request.user
+            contact.save()
+            return redirect('contact:update', contact_id=contact.pk)
+
         return render(
             request,
             'contact/create.html',
             context
             )
-    
+
     context = {
-        'form': ContactForm()
+        'form': ContactForm(),
+        'form_action': form_action
     }
     return render(
         request,
@@ -53,3 +38,52 @@ def create(request):
         )
 
 
+@login_required(login_url='contact:login')
+def update(request, contact_id):
+    contact = get_object_or_404(Contact, id=contact_id,
+                                show=True, owner=request.user)
+    form_action = reverse('contact:update', args=(contact_id,))
+    if request.method == 'POST':
+        form = ContactForm(request.POST, request.FILES, instance=contact)
+        context = {
+            'form': form,
+            'form_action': form_action
+        }
+        if form.is_valid():
+            contact = form.save()
+            return redirect('contact:update', contact_id=contact.pk)
+
+        return render(
+            request,
+            'contact/create.html',
+            context
+            )
+
+    context = {
+        'form': ContactForm(instance=contact),
+        'form_action': form_action
+    }
+    return render(
+        request,
+        'contact/create.html',
+        context
+        )
+
+
+@login_required(login_url='contact:login')
+def delete(request, contact_id):
+    contact = get_object_or_404(Contact, id=contact_id,
+                                show=True, owner=request.user)
+    confirmation = request.POST.get('confirmation', 'no')
+    print(confirmation)
+    if confirmation == 'yes':
+        contact.delete()
+        return redirect('contact:index')
+    return render(
+        request,
+        'contact/contact.html',
+        {
+            'contact': contact,
+            'confirmation': confirmation,
+        }
+    )
